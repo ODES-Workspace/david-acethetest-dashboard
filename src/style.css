@@ -1,0 +1,9 @@
+#acethetest-dashboard {
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+}
+
+input#swal2-input {
+    width: unset;
+}
