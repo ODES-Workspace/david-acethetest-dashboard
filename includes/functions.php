@@ -1,5 +1,6 @@
 <?php
 
+namespace AceTheTest_Dashboard\includes;
 
 function ajax_return($success, $message, $data = null)
 {
