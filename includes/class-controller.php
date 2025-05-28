@@ -37,32 +37,6 @@ class Controller
 
     public function get_test_scores()
     {
-//        $user_id = get_current_user_id();
-//        $test_score = 0;
-//        $course_ids = learndash_user_get_enrolled_courses($user_id);
-//        $attemps = learndash_get_user_quiz_attempt($user_id);
-//        foreach ($course_ids as $course_id) {
-//            $course = get_post($course_id);
-//            // Get course-level quizzes
-//            $course_quizzes = learndash_get_course_quiz_list($course, $user_id);
-//            foreach ($course_quizzes as $quiz) {
-//                if ($quiz['status'] == "completed") {
-//                    $course_data['course_quizzes'][] = [
-//                        'id' => $quiz['id'],
-//                        'title' => get_the_title($quiz['id']),
-//                    ];
-//                }
-//            }
-//
-//            // Get all lessons in the course
-//            $lessons = learndash_get_lesson_list($course_id);
-//            foreach ($lessons as $lesson) {
-//                $lesson_quizzes = learndash_get_lesson_quiz_list($lesson->ID, $user_id);
-//                foreach ($lesson_quizzes as $quiz){
-//                    $a = $quiz;
-//                }
-//            }
-//        }
 
 //        echo LD_Helper::get_latest_test_scores_for_user(get_current_user_id(), [889]);
 
