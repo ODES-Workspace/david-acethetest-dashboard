@@ -13,7 +13,6 @@
 namespace AceThetest_Dashboard;
 
 // Exit if accessed directly.
-use LatePoint\Cerber\Router;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -92,6 +91,8 @@ final class AceThetest_Dashboard
         include_once 'includes/class-setup.php';
         include_once 'includes/class-controller.php';
         include_once 'includes/class-shortcodes.php';
+        include_once 'includes/class-learndash-helper.php';
+        include_once 'includes/class-latepoint-helper.php';
 
         include_once 'includes/functions.php';
     }
