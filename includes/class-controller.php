@@ -30,9 +30,15 @@ class Controller
 
     public function ajax_get_study_hours()
     {
-        $manual_hours = get_user_meta(get_current_user_id(), $this->pre . 'study_hours', true);
-        if (!is_array($manual_hours)) $manual_hours = [];
-        ajax_return(true, 'Study Hours', ['manual' => $manual_hours]);
+        $user_id = get_current_user_id();
+        if (!$user_id){
+            ajax_return(false, 'User not logged in.');
+        }else {
+            $manual_hours = get_user_meta(get_current_user_id(), $this->pre . 'study_hours', true);
+            $bookings = Latepoint_Helper::get_study_hours_for_user($user_id);
+            if (!is_array($manual_hours)) $manual_hours = [];
+            ajax_return(true, 'Study Hours', ['manual' => $manual_hours,'study_hours' => $bookings]);
+        }
     }
 
     public function get_test_scores()

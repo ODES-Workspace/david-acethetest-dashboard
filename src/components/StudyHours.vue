@@ -1,21 +1,42 @@
 <script lang="ts" setup>
-
 //@ts-ignore
 import Swal from 'sweetalert2';
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import axios from "axios";
 import {type InterfaceManualHours} from '@/interfaces/InterfaceManualHours';
+import {type IBooking} from '@/interfaces/IBooking';
 
-const studyHours = ref<{ manual: InterfaceManualHours[] }>({manual: []});
+const studyHours = ref<{ manual: InterfaceManualHours[],study_hours: IBooking[] }>({manual: [],study_hours:[]});
+const isLoading = ref(true);
 
 onMounted(async () => {
-  //@ts-ignore
-  const response = await axios.postForm(acethetest_dashboard_script.ajax_url, {
-    action: 'attd_get_study_hours'
-  });
-  studyHours.value = response.data.data ?? false;
+  try {
+    //@ts-ignore
+    const response = await axios.postForm(acethetest_dashboard_script.ajax_url, {
+      action: 'attd_get_study_hours'
+    });
+    studyHours.value = response.data.data ?? false;
+  } catch (error) {
+    console.error('Error fetching study hours:', error);
+  } finally {
+    isLoading.value = false;
+  }
 })
 
+const totalStudyHours = computed(() => {
+  const manualHours = studyHours.value.manual.reduce((sum:number, entry:InterfaceManualHours) => {
+    const hours = parseFloat(entry.hours);
+    return sum + (isNaN(hours) ? 0 : hours);
+  }, 0);
+
+  const bookingHours = studyHours.value.study_hours.reduce((sum:number, booking:IBooking) => {
+    const minutes = parseFloat(booking.duration);
+    const hours = isNaN(minutes) ? 0 : minutes / 60;
+    return sum + hours;
+  }, 0);
+
+  return (manualHours + bookingHours).toFixed(2);
+});
 
 const showStudyHoursPrompt = async () => {
   const formatDateForInput = (usDate: string): string => {
@@ -28,6 +49,7 @@ const showStudyHoursPrompt = async () => {
     hours: entry.hours ?? '',
     date: entry.date ? formatDateForInput(entry.date) : new Date().toISOString().split('T')[0]
   }));
+
   const container = document.createElement('div');
   container.className = 'space-y-4';
   container.id = 'acethetest-dashboard';
@@ -115,30 +137,40 @@ const showStudyHoursPrompt = async () => {
     });
   }
 };
-
-
 </script>
 
 <template>
   <div class="bg-white rounded shadow-md p-2">
-    <div class="flex text-sm justify-between font-bold">
-      <span>Study Hours</span>
-      <span class="dashicons dashicons-book"></span>
-    </div>
-    <div class="flex gap-2">
-      <div class="font-bold text-xl">{{
-          studyHours.manual.reduce((sum, entry) => {
-            const hours = parseFloat(entry.hours);
-            return sum + (isNaN(hours) ? 0 : hours);
-          }, 0)
-        }}
+    <!-- Loading Skeleton -->
+    <div v-if="isLoading" class="animate-pulse">
+      <div class="flex text-sm justify-between mb-2">
+        <div class="h-4 bg-gray-200 rounded w-20"></div>
+        <div class="h-4 w-4 bg-gray-200 rounded"></div>
       </div>
-      <span class="dashicons dashicons-edit text-white bg-blue-400 rounded-full cursor-pointer"
-            @click="showStudyHoursPrompt"></span>
+      <div class="flex gap-2 items-center">
+        <div class="h-7 bg-gray-200 rounded w-12"></div>
+        <div class="h-5 w-5 bg-gray-200 rounded-full"></div>
+      </div>
+    </div>
+
+    <!-- Actual Content -->
+    <div v-else>
+      <div class="flex text-sm justify-between font-bold">
+        <span>Study Hours</span>
+        <span class="dashicons dashicons-book"></span>
+      </div>
+      <div class="flex gap-2 items-center">
+        <div class="font-bold text-xl">
+          {{ totalStudyHours }}
+        </div>
+        <span
+            class="dashicons dashicons-edit text-white bg-blue-400 rounded-full cursor-pointer hover:bg-blue-500 transition-colors"
+            @click="showStudyHoursPrompt"
+        ></span>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-
 </style>
