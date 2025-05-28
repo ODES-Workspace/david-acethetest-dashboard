@@ -70,8 +70,8 @@ class Controller
 
     function set_study_hours()
     {
-        update_user_meta(get_current_user_id(), $this->pre . 'study_hours', $_POST['hours']);
-        ajax_return(true, 'Study Hours', $_POST['hours']);
+        update_user_meta(get_current_user_id(), $this->pre . 'study_hours', $_POST['manual_hours']);
+        ajax_return(true, 'Study Hours', $_POST['manual_hours']);
     }
 
     public

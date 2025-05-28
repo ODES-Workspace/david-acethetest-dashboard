@@ -61,16 +61,41 @@ class Metaboxes
             'attributes' => []
         ];
 
+        $study_hour_fields = [];
+        $study_hour_fields[] = [
+            'name' => 'Date',
+            'desc' => '',
+            'id' => 'date',
+            'type' => 'text_date',
+            'default' => '',
+            'attributes' => []
+        ];
+        $study_hour_fields[] = [
+            'name' => 'Hours',
+            'desc' => '',
+            'id' => 'hours',
+            'type' => 'text',
+            'default' => '',
+            'attributes' => array(
+                'type' => 'number',
+                'step' => '0.1',
+                'min' => '0',
+            ),
+        ];
         $fields[] = [
             'name' => 'Study Hours',
             'desc' => '',
             'id' => $this->pre . 'study_hours',
-            'type' => 'text',
+            'type' => 'group',
             'default' => '',
-            'attributes' => [
-                'type' => 'number'
-            ],
-            'repeatable' => true
+            'fields' => $study_hour_fields,
+            'repeatable' => true,
+            'options' => array(
+                'group_title' => __('Hour {#}', 'acethetest-dashboard'),
+                'add_button' => __('Add Hour', 'acethetest-dashboard'),
+                'remove_button' => __('Remove Hour', 'acethetest-dashboard'),
+//                'sortable' => true,
+            ),
         ];
 
 
