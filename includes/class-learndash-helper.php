@@ -10,24 +10,37 @@ class LD_Helper
         $results = [];
 
         foreach ($course_ids as $course_id) {
+            // Init scores in case no quizzes found
+            $course_quiz_avg = 0;
+            $lesson_quiz_avg = 0;
+            $course_scores = [];
+            $lesson_scores = [];
 
             // 1. Find every quiz that belongs to this course.
             $quizzes = learndash_get_course_quiz_list($course_id); // Legacy but still supported
             if (count($quizzes)) {
-                $scores = self::get_quiz_scores($user_id, $quizzes);
-                $avg = array_sum($scores) / count($scores);
+                $course_scores = self::get_quiz_scores($user_id, $quizzes);
             }
-            echo 'quizes for course: ' . $course_id;
-            echo json_encode($quizzes);
 
+            // 2. Find every quiz that belongs to this course lessons
             $lessons = learndash_get_lesson_list($course_id);
-            echo 'lessons for course: ' . $course_id;
             foreach ($lessons as $lesson) {
                 $quizzes = learndash_get_lesson_quiz_list($lesson->ID);
-                echo 'quizes for lesson: ' . $lesson->ID;
-                echo json_encode($quizzes);
                 $scores = self::get_quiz_scores($user_id, $quizzes);
+                $lesson_scores = array_merge($lesson_scores, $scores);
             }
+
+            // Combine and calculate final average
+            $all_scores = array_merge($course_scores, $lesson_scores);
+            $final_avg = count($all_scores) ? array_sum($all_scores) / count($all_scores) : 0;
+
+            // Append result
+            $results[] = [
+                'course_id'     => $course_id,
+                'course_title'  => get_the_title($course_id),
+                'course_url'    => get_permalink($course_id),
+                'average_score' => round($final_avg, 2),
+            ];
         }
 
         return $results;
@@ -40,16 +53,13 @@ class LD_Helper
             $quiz_id = (int)$quiz['id'];     // key name per API docs
             // 2. Grab ALL attempt activity-IDs for this user+quiz.
             $attempts = learndash_get_user_quiz_attempts($user_id, $quiz_id);
-            if (empty($attempts)) {
-                continue; // user never attempted this quiz
+            foreach ($attempts as $attempt) {
+                $meta = learndash_get_activity_meta_fields($attempt->activity_id);
+                if (!isset($meta['percentage']) || $meta['percentage'] === '') {
+                    continue;
+                }
+                $scores[] = (int)$meta['percentage'];
             }
-            // 3. Pick the last ID → latest attempt.
-            $latest_attempt = end($attempts);
-            $meta = learndash_get_activity_meta_fields($latest_attempt->activity_id);
-            if (empty($meta['percentage'])) {
-                continue;
-            }
-            $scores[] = (int)$meta['percentage'];
         }
         return $scores;
     }
