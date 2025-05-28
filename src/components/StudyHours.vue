@@ -8,6 +8,7 @@ import {type IBooking} from '@/interfaces/IBooking';
 
 const studyHours = ref<{ manual: InterfaceManualHours[],study_hours: IBooking[] }>({manual: [],study_hours:[]});
 const isLoading = ref(true);
+const showTooltip = ref(false);
 
 onMounted(async () => {
   try {
@@ -36,6 +37,21 @@ const totalStudyHours = computed(() => {
   }, 0);
 
   return (manualHours + bookingHours).toFixed(2);
+});
+
+const manualHoursTotal = computed(() => {
+  return studyHours.value.manual.reduce((sum:number, entry:InterfaceManualHours) => {
+    const hours = parseFloat(entry.hours);
+    return sum + (isNaN(hours) ? 0 : hours);
+  }, 0).toFixed(2);
+});
+
+const bookingHoursTotal = computed(() => {
+  const totalMinutes = studyHours.value.study_hours.reduce((sum:number, booking:IBooking) => {
+    const minutes = parseFloat(booking.duration);
+    return sum + (isNaN(minutes) ? 0 : minutes);
+  }, 0);
+  return (totalMinutes / 60).toFixed(2);
 });
 
 const showStudyHoursPrompt = async () => {
@@ -140,7 +156,40 @@ const showStudyHoursPrompt = async () => {
 </script>
 
 <template>
-  <div class="bg-white rounded shadow-md p-2">
+  <div
+      class="bg-white rounded shadow-md p-2 relative"
+      @mouseenter="showTooltip = true"
+      @mouseleave="showTooltip = false"
+  >
+    <!-- Tooltip -->
+    <div
+        v-if="showTooltip && !isLoading"
+        class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-10 bg-gray-800 text-white text-xs rounded-lg px-3 py-2 shadow-lg whitespace-nowrap"
+    >
+      <div class="space-y-1">
+        <div class="flex justify-between gap-4">
+          <span>Manual:</span>
+          <span class="font-semibold">{{ manualHoursTotal }}</span>
+        </div>
+        <div class="flex justify-between gap-4">
+          <span>Classroom Class:</span>
+          <span class="font-semibold">{{ bookingHoursTotal }}</span>
+        </div>
+        <div class="flex justify-between gap-4">
+          <span>On Demand Class:</span>
+          <span class="font-semibold">0</span>
+        </div>
+        <div class="border-t border-gray-600 pt-1 mt-1">
+          <div class="flex justify-between gap-4">
+            <span>Total:</span>
+            <span class="font-bold">{{ totalStudyHours }}</span>
+          </div>
+        </div>
+      </div>
+      <!-- Tooltip Arrow -->
+      <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
+    </div>
+
     <!-- Loading Skeleton -->
     <div v-if="isLoading" class="animate-pulse">
       <div class="flex text-sm justify-between mb-2">
