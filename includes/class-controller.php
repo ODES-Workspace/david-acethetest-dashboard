@@ -64,7 +64,9 @@ class Controller
 //            }
 //        }
 
-        ajax_return(true, 'Test Scores', 11);
+//        echo LD_Helper::get_latest_test_scores_for_user(get_current_user_id(), [889]);
+
+        ajax_return(true, 'Test Scores1', 11);
     }
 
 
