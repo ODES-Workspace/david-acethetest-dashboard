@@ -43,7 +43,7 @@ async function handleExamDateEdit() {
     showCancelButton: true,
     didOpen: () => {
       const today = (new Date()).toISOString();
-      Swal.getInput().min = today.split("T")[0];
+      Swal!.getInput()!.min = today.split("T")[0];
     }
   });
 

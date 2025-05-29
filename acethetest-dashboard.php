@@ -31,7 +31,7 @@ final class AceThetest_Dashboard
      */
     protected static $_instance = null;
 
-    public $version = '2.0.1';
+    public $version = '2.0.3';
     public $settings;
 
     /**
@@ -65,7 +65,7 @@ final class AceThetest_Dashboard
         $this->define('ACETHETEST_DASHBOARD_BASENAME', plugin_basename(__FILE__));
         $this->define('ACETHETEST_DASHBOARD_VERSION', $this->version);
         //todo: need to make it to production before going live
-        $this->define('ACETHETEST_DASHBOARD_ENV', 'development');
+        $this->define('ACETHETEST_DASHBOARD_ENV', 'production');
     }
 
     /**

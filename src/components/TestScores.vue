@@ -96,7 +96,7 @@ const openCourse = (url: string) => {
           {{ averageScore }}%
         </div>
         <div v-if="testScores.length > 0" class="text-xs text-gray-500">
-          ({{ testScores.length }} course{{ testScores.length !== 1 ? 's' : '' }})
+          ({{ testScores.length }} Test{{ testScores.length !== 1 ? 's' : '' }})
         </div>
       </div>
     </div>

@@ -3,8 +3,8 @@
 import Swal from 'sweetalert2';
 import {computed, onMounted, ref} from "vue";
 import axios from "axios";
-import {type InterfaceManualHours} from '@/interfaces/InterfaceManualHours';
-import {type IBooking} from '@/interfaces/IBooking';
+import {type InterfaceManualHours} from '@/Interfaces/InterfaceManualHours';
+import {type IBooking} from '@/Interfaces/IBooking';
 import SkeletonLoader from "@/components/partials/SkeletonLoader.vue";
 
 const studyHours = ref<{ manual: InterfaceManualHours[], study_hours: IBooking[] }>({manual: [], study_hours: []});

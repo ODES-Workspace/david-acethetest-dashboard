@@ -25,6 +25,12 @@ class Setup
     public function hooks()
     {
         add_action('wp_enqueue_scripts', array($this, 'enqueue_vite'));
+        add_filter('script_loader_tag', function($tag, $handle) {
+            if ($handle === 'acethetest-dashboard-script') {
+                $tag = str_replace('<script ', '<script type="module" ', $tag);
+            }
+            return $tag;
+        }, 10, 2);
     }
 
 
@@ -57,7 +63,7 @@ class Setup
 
         wp_enqueue_style('acethetest-dashboard-style', $uri . 'dist/' . $entry['css'][0], [], $version);
 
-        wp_enqueue_script('acethetest-dashboard-script', $uri . 'dist/' . $entry['file'], [], $version, true);
+        wp_enqueue_script('acethetest-dashboard-script', $uri . 'dist/' . $entry['file'], [], $version, ['strategy' => 'defer', 'in_footer' => true]);
 
 
         wp_localize_script('acethetest-dashboard-script', 'acethetest_dashboard_script', $options);
