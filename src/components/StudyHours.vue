@@ -5,8 +5,9 @@ import {computed, onMounted, ref} from "vue";
 import axios from "axios";
 import {type InterfaceManualHours} from '@/interfaces/InterfaceManualHours';
 import {type IBooking} from '@/interfaces/IBooking';
+import SkeletonLoader from "@/components/partials/SkeletonLoader.vue";
 
-const studyHours = ref<{ manual: InterfaceManualHours[],study_hours: IBooking[] }>({manual: [],study_hours:[]});
+const studyHours = ref<{ manual: InterfaceManualHours[], study_hours: IBooking[] }>({manual: [], study_hours: []});
 const isLoading = ref(true);
 const showTooltip = ref(false);
 
@@ -25,12 +26,12 @@ onMounted(async () => {
 })
 
 const totalStudyHours = computed(() => {
-  const manualHours = studyHours.value.manual.reduce((sum:number, entry:InterfaceManualHours) => {
+  const manualHours = studyHours.value.manual.reduce((sum: number, entry: InterfaceManualHours) => {
     const hours = parseFloat(entry.hours);
     return sum + (isNaN(hours) ? 0 : hours);
   }, 0);
 
-  const bookingHours = studyHours.value.study_hours.reduce((sum:number, booking:IBooking) => {
+  const bookingHours = studyHours.value.study_hours.reduce((sum: number, booking: IBooking) => {
     const minutes = parseFloat(booking.duration);
     const hours = isNaN(minutes) ? 0 : minutes / 60;
     return sum + hours;
@@ -40,14 +41,14 @@ const totalStudyHours = computed(() => {
 });
 
 const manualHoursTotal = computed(() => {
-  return studyHours.value.manual.reduce((sum:number, entry:InterfaceManualHours) => {
+  return studyHours.value.manual.reduce((sum: number, entry: InterfaceManualHours) => {
     const hours = parseFloat(entry.hours);
     return sum + (isNaN(hours) ? 0 : hours);
   }, 0).toFixed(2);
 });
 
 const bookingHoursTotal = computed(() => {
-  const totalMinutes = studyHours.value.study_hours.reduce((sum:number, booking:IBooking) => {
+  const totalMinutes = studyHours.value.study_hours.reduce((sum: number, booking: IBooking) => {
     const minutes = parseFloat(booking.duration);
     return sum + (isNaN(minutes) ? 0 : minutes);
   }, 0);
@@ -126,7 +127,7 @@ const showStudyHoursPrompt = async () => {
   addButton.className = 'bg-blue-500 border-none mt-1 text-white px-3 py-1 rounded';
   addButton.innerText = 'Add Study Hour';
   addButton.addEventListener('click', () => {
-    manualHours.push({ hours: '0', date: new Date().toISOString().split('T')[0] });
+    manualHours.push({hours: '0', date: new Date().toISOString().split('T')[0]});
     renderFields();
   });
 
@@ -156,15 +157,11 @@ const showStudyHoursPrompt = async () => {
 </script>
 
 <template>
-  <div
-      class="bg-white rounded shadow-md p-2 relative"
-      @mouseenter="showTooltip = true"
-      @mouseleave="showTooltip = false"
-  >
+  <div class="bg-white rounded shadow-md p-2 relative">
     <!-- Tooltip -->
     <div
-        v-if="showTooltip && !isLoading"
-        class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-10 bg-gray-800 text-white text-xs rounded-lg px-3 py-2 shadow-lg whitespace-nowrap"
+        v-if="showTooltip"
+        class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-10 bg-gray-800 text-white text-xs rounded-lg px-3 py-2 shadow-lg whitespace-nowrap max-w-xs"
     >
       <div class="space-y-1">
         <div class="flex justify-between gap-4">
@@ -187,23 +184,19 @@ const showStudyHoursPrompt = async () => {
         </div>
       </div>
       <!-- Tooltip Arrow -->
-      <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
+      <div
+          class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
     </div>
 
     <!-- Loading Skeleton -->
-    <div v-if="isLoading" class="animate-pulse">
-      <div class="flex text-sm justify-between mb-2">
-        <div class="h-4 bg-gray-200 rounded w-20"></div>
-        <div class="h-4 w-4 bg-gray-200 rounded"></div>
-      </div>
-      <div class="flex gap-2 items-center">
-        <div class="h-7 bg-gray-200 rounded w-12"></div>
-        <div class="h-5 w-5 bg-gray-200 rounded-full"></div>
-      </div>
-    </div>
+    <skeleton-loader v-if="isLoading"/>
 
     <!-- Actual Content -->
-    <div v-else>
+    <div
+        v-else
+        @mouseenter="showTooltip = true"
+        @mouseleave="showTooltip = false"
+    >
       <div class="flex text-sm justify-between font-bold">
         <span>Study Hours</span>
         <span class="dashicons dashicons-book"></span>
