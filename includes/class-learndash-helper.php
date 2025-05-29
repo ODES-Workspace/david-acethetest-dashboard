@@ -53,13 +53,13 @@ class LD_Helper
             $quiz_id = (int)$quiz['id'];     // key name per API docs
             // 2. Grab ALL attempt activity-IDs for this user+quiz.
             $attempts = learndash_get_user_quiz_attempts($user_id, $quiz_id);
-            foreach ($attempts as $attempt) {
-                $meta = learndash_get_activity_meta_fields($attempt->activity_id);
-                if (!isset($meta['percentage']) || $meta['percentage'] === '') {
-                    continue;
-                }
-                $scores[] = (int)$meta['percentage'];
+            // 3. Pick the last ID → latest attempt.
+            $latest_attempt = end($attempts);
+            $meta = learndash_get_activity_meta_fields($latest_attempt->activity_id);
+            if (!isset($meta['percentage']) || $meta['percentage'] === '') {
+                continue;
             }
+            $scores[] = (float)$meta['percentage'];
         }
         return $scores;
     }
