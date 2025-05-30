@@ -68,10 +68,9 @@ class LD_Helper
     {
 
     }
-    public static function get_quiz_activities_for_user($user_id)
+    public static function get_quiz_activities_for_user($user_id,$course_ids)
     {
         $results = [];
-        $course_ids = learndash_user_get_enrolled_courses($user_id);
         foreach ($course_ids as $course_id) {
             $quizzes_data = [];
 
@@ -100,9 +99,9 @@ class LD_Helper
 
                     $attempts_data[] = [
                         'score'      => isset($meta['points']) ? (int)$meta['points'] : 0,
-                        'questions'  => isset($meta['questions']) ? (int)$meta['questions'] : 0,
+                        'questions'  => isset($meta['total_points']) ? (int)$meta['total_points'] : 0,
                         'percentage' => (float)$meta['percentage'],
-                        'date'       => date("d-m-Y", $attempt->activity_started)
+                        'date'       => date("d-m-Y", $meta['completed'])
                     ];
                 }
 
@@ -118,6 +117,7 @@ class LD_Helper
             if (!empty($quizzes_data)) {
                 $results[] = [
                     'courseTitle' => get_the_title($course_id),
+                    'post_url' => get_permalink($course_id),
                     'quizzes'     => $quizzes_data,
                 ];
             }

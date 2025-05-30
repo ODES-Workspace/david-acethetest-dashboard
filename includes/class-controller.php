@@ -50,7 +50,7 @@ class Controller
 
     public function get_test_activities()
     {
-        $results = LD_Helper::get_quiz_activities_for_user(get_current_user_id());
+        $results = LD_Helper::get_quiz_activities_for_user(get_current_user_id(),[889,261,259]);
         ajax_return(true, 'Activities Fetched', $results);
     }
 

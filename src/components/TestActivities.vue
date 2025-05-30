@@ -56,7 +56,9 @@
                 class="border-b border-gray-200 pb-4 last:border-b-0"
             >
               <!-- Course Title -->
-              <h2 class="text-xl font-bold text-gray-900 mb-3">{{ course.courseTitle }}</h2>
+              <a :href="course.post_url">
+                <h2 class="text-xl font-bold text-gray-900 mb-3">{{ course.courseTitle }}</h2>
+              </a>
 
               <!-- Quizzes for this course -->
               <div class="space-y-2 ml-4">
@@ -75,11 +77,9 @@
                         :key="attemptIndex"
                         class="ml-2"
                     >
-                      <div class="flex justify-between items-start mb-1">
-                        <div>
-                          <p class="text-sm text-gray-600">Score: {{ attempt.score }}/{{ attempt.questions }}</p>
-                        </div>
-                        <span class="text-lg font-bold text-gray-900">{{ attempt.percentage }}%</span>
+                      <div class="flex justify-between items-start mb-0">
+                        <p class="text-sm text-gray-600 mb-0">Score: {{ attempt.score }}/{{ attempt.questions }}</p>
+                        <span class="text-lg font-bold text-gray-900 mb-0">{{ attempt.percentage }}%</span>
                       </div>
 
                       <div class="mb-1">
@@ -121,64 +121,6 @@ onMounted(async () => {
     testActivities.value = response.data.data ?? [];
   } catch (error) {
     console.error('Error fetching test activities:', error);
-    // Fallback data for development/testing
-    // testActivities.value = [
-    //   {
-    //     courseTitle: "Life & Health Insurance",
-    //     quizzes: [
-    //       {
-    //         name: "Module 1 Quiz: Insurance Basics",
-    //         attempts: [
-    //           {
-    //             score: 6,
-    //             questions: 10,
-    //             percentage: 60,
-    //             date: "May 10, 2025"
-    //           },
-    //           {
-    //             score: 8,
-    //             questions: 10,
-    //             percentage: 80,
-    //             date: "May 11, 2025"
-    //           }
-    //         ]
-    //       },
-    //       {
-    //         name: "Module 3 Quiz: Policy Types",
-    //         attempts: [
-    //           {
-    //             score: 9,
-    //             questions: 10,
-    //             percentage: 90,
-    //             date: "May 12, 2025"
-    //           }
-    //         ]
-    //       }
-    //     ]
-    //   },
-    //   {
-    //     courseTitle: "Property & Casualty Insurance",
-    //     quizzes: [
-    //       {
-    //         name: "Module 2 Quiz: Risk Assessment",
-    //         attempts: [
-    //           {
-    //             score: 7,
-    //             questions: 10,
-    //             percentage: 70,
-    //             date: "May 8, 2025"
-    //           },
-    //           {
-    //             score: 8,
-    //             questions: 10,
-    //             percentage: 80,
-    //             date: "May 9, 2025"
-    //           }
-    //         ]
-    //       }
-    //     ]
-    //   }
-    // ];
   } finally {
     isLoading.value = false;
   }
