@@ -6,7 +6,50 @@
 
         <!-- Scrollable container -->
         <div class="h-96 overflow-y-auto pr-2">
-          <div class="space-y-4">
+          <!-- Loading Skeleton -->
+          <div v-if="isLoading" class="space-y-4">
+            <div
+                v-for="i in 3"
+                :key="i"
+                class="border-b border-gray-200 pb-4"
+            >
+              <!-- Course Title Skeleton -->
+              <div class="h-6 bg-gray-200 rounded w-1/3 mb-3 animate-pulse"></div>
+
+              <!-- Quiz Skeletons -->
+              <div class="space-y-2 ml-4">
+                <div
+                    v-for="j in 2"
+                    :key="j"
+                    class="border-l-2 border-gray-100 pl-4 pb-2"
+                >
+                  <!-- Quiz Name Skeleton -->
+                  <div class="h-5 bg-gray-200 rounded w-2/3 mb-2 animate-pulse"></div>
+
+                  <!-- Attempt Skeletons -->
+                  <div class="space-y-1">
+                    <div
+                        v-for="k in 2"
+                        :key="k"
+                        class="ml-2"
+                    >
+                      <div class="flex justify-between items-start mb-1">
+                        <div class="h-4 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+                        <div class="h-4 bg-gray-200 rounded w-12 animate-pulse"></div>
+                      </div>
+                      <div class="mb-1">
+                        <div class="w-full bg-gray-200 rounded-full h-2 animate-pulse"></div>
+                      </div>
+                      <div class="h-3 bg-gray-200 rounded w-20 mb-2 animate-pulse"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actual Content -->
+          <div v-else class="space-y-4">
             <div
                 v-for="(course, courseIndex) in testActivities"
                 :key="courseIndex"
@@ -34,7 +77,7 @@
                     >
                       <div class="flex justify-between items-start mb-1">
                         <div>
-                          <p class="text-sm text-gray-600">Attempt {{ attemptIndex + 1 }}: {{ attempt.score }}/{{ attempt.questions }}</p>
+                          <p class="text-sm text-gray-600">Score: {{ attempt.score }}/{{ attempt.questions }}</p>
                         </div>
                         <span class="text-lg font-bold text-gray-900">{{ attempt.percentage }}%</span>
                       </div>
@@ -63,132 +106,83 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
 
-const testActivities = ref([
-  {
-    courseTitle: "Life & Health Insurance",
-    quizzes: [
-      {
-        name: "Module 1 Quiz: Insurance Basics",
-        attempts: [
-          {
-            score: 6,
-            questions: 10,
-            percentage: 60,
-            date: "May 10, 2025"
-          },
-          {
-            score: 8,
-            questions: 10,
-            percentage: 80,
-            date: "May 11, 2025"
-          }
-        ]
-      },
-      {
-        name: "Module 3 Quiz: Policy Types",
-        attempts: [
-          {
-            score: 9,
-            questions: 10,
-            percentage: 90,
-            date: "May 12, 2025"
-          }
-        ]
-      },
-      {
-        name: "Midterm Exam",
-        attempts: [
-          {
-            score: 15,
-            questions: 20,
-            percentage: 75,
-            date: "May 14, 2025"
-          },
-          {
-            score: 17,
-            questions: 20,
-            percentage: 85,
-            date: "May 16, 2025"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    courseTitle: "Property & Casualty Insurance",
-    quizzes: [
-      {
-        name: "Module 2 Quiz: Risk Assessment",
-        attempts: [
-          {
-            score: 7,
-            questions: 10,
-            percentage: 70,
-            date: "May 8, 2025"
-          },
-          {
-            score: 8,
-            questions: 10,
-            percentage: 80,
-            date: "May 9, 2025"
-          },
-          {
-            score: 9,
-            questions: 10,
-            percentage: 90,
-            date: "May 10, 2025"
-          }
-        ]
-      },
-      {
-        name: "Module 4 Quiz: Claims Process",
-        attempts: [
-          {
-            score: 19,
-            questions: 20,
-            percentage: 95,
-            date: "May 11, 2025"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    courseTitle: "Insurance Ethics & Compliance",
-    quizzes: [
-      {
-        name: "Ethics Quiz: Professional Standards",
-        attempts: [
-          {
-            score: 10,
-            questions: 10,
-            percentage: 100,
-            date: "May 5, 2025"
-          }
-        ]
-      },
-      {
-        name: "Compliance Test: Regulations",
-        attempts: [
-          {
-            score: 12,
-            questions: 15,
-            percentage: 80,
-            date: "May 6, 2025"
-          },
-          {
-            score: 14,
-            questions: 15,
-            percentage: 93,
-            date: "May 7, 2025"
-          }
-        ]
-      }
-    ]
+const testActivities = ref([])
+const isLoading = ref(true)
+
+onMounted(async () => {
+  try {
+    //@ts-ignore
+    const response = await axios.postForm(acethetest_dashboard_script.ajax_url, {
+      action: 'attd_get_test_activities'
+    });
+    testActivities.value = response.data.data ?? [];
+  } catch (error) {
+    console.error('Error fetching test activities:', error);
+    // Fallback data for development/testing
+    // testActivities.value = [
+    //   {
+    //     courseTitle: "Life & Health Insurance",
+    //     quizzes: [
+    //       {
+    //         name: "Module 1 Quiz: Insurance Basics",
+    //         attempts: [
+    //           {
+    //             score: 6,
+    //             questions: 10,
+    //             percentage: 60,
+    //             date: "May 10, 2025"
+    //           },
+    //           {
+    //             score: 8,
+    //             questions: 10,
+    //             percentage: 80,
+    //             date: "May 11, 2025"
+    //           }
+    //         ]
+    //       },
+    //       {
+    //         name: "Module 3 Quiz: Policy Types",
+    //         attempts: [
+    //           {
+    //             score: 9,
+    //             questions: 10,
+    //             percentage: 90,
+    //             date: "May 12, 2025"
+    //           }
+    //         ]
+    //       }
+    //     ]
+    //   },
+    //   {
+    //     courseTitle: "Property & Casualty Insurance",
+    //     quizzes: [
+    //       {
+    //         name: "Module 2 Quiz: Risk Assessment",
+    //         attempts: [
+    //           {
+    //             score: 7,
+    //             questions: 10,
+    //             percentage: 70,
+    //             date: "May 8, 2025"
+    //           },
+    //           {
+    //             score: 8,
+    //             questions: 10,
+    //             percentage: 80,
+    //             date: "May 9, 2025"
+    //           }
+    //         ]
+    //       }
+    //     ]
+    //   }
+    // ];
+  } finally {
+    isLoading.value = false;
   }
-])
+})
 
 const getProgressBarColor = (percentage) => {
   if (percentage >= 90) return 'bg-green-500'
