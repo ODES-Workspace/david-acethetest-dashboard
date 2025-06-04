@@ -75,16 +75,16 @@ class LD_Helper
             $quizzes_data = [];
 
             // Get course-level quizzes
-            $course_quizzes = learndash_get_course_quiz_list($course_id);
+            $quizzes = learndash_get_course_quiz_list($course_id);
 
             // Get lesson-level quizzes
             $lessons = learndash_get_lesson_list($course_id);
             foreach ($lessons as $lesson) {
                 $lesson_quizzes = learndash_get_lesson_quiz_list($lesson->ID);
-                $course_quizzes = array_merge($course_quizzes, $lesson_quizzes);
+                $quizzes = array_merge($quizzes, $lesson_quizzes);
             }
 
-            foreach ($course_quizzes as $quiz) {
+            foreach ($quizzes as $quiz) {
                 $quiz_id = (int)$quiz['id'];
                 $attempts_data = [];
 
@@ -101,8 +101,19 @@ class LD_Helper
                         'score'      => isset($meta['points']) ? (int)$meta['points'] : 0,
                         'questions'  => isset($meta['total_points']) ? (int)$meta['total_points'] : 0,
                         'percentage' => (float)$meta['percentage'],
-                        'date'       => date("d-m-Y", $meta['completed'])
+                        'date'       => $meta['completed']
                     ];
+                }
+
+
+                // Sort attempts by 'completed' in descending order
+                usort($attempts_data, function ($a, $b) {
+                    return $b['date'] <=> $a['date'];
+                });
+
+                // Format date after sorting
+                foreach ($attempts_data as &$data) {
+                    $data['date'] = date("d-m-Y", $data['date']);
                 }
 
                 // Skip quizzes with no attempts
