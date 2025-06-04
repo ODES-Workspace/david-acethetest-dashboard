@@ -38,7 +38,9 @@ class Controller
             $manual_hours = get_user_meta(get_current_user_id(), $this->pre . 'study_hours', true);
             $bookings = Latepoint_Helper::get_study_hours_for_user($user_id);
             if (!is_array($manual_hours)) $manual_hours = [];
-            ajax_return(true, 'Study Hours', ['manual' => $manual_hours,'study_hours' => $bookings]);
+//            learndash_get_user_quiz_attempts_time_spent()
+            $on_demand_hours = LD_Helper::get_study_hours_for_user($user_id);
+            ajax_return(true, 'Study Hours', ['manual' => $manual_hours,'study_hours' => $bookings, 'on_demand' =>  $on_demand_hours]);
         }
     }
 

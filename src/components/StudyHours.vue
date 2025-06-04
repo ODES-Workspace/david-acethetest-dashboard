@@ -7,7 +7,10 @@ import {type InterfaceManualHours} from '@/Interfaces/InterfaceManualHours';
 import {type IBooking} from '@/Interfaces/IBooking';
 import SkeletonLoader from "@/components/partials/SkeletonLoader.vue";
 
-const studyHours = ref<{ manual: InterfaceManualHours[], study_hours: IBooking[] }>({manual: [], study_hours: []});
+const studyHours = ref<{ manual: InterfaceManualHours[], study_hours: IBooking[], on_demand: number }>({
+  manual: [],
+  study_hours: []
+});
 const isLoading = ref(true);
 const showTooltip = ref(false);
 
@@ -37,7 +40,7 @@ const totalStudyHours = computed(() => {
     return sum + hours;
   }, 0);
 
-  return (manualHours + bookingHours).toFixed(2);
+  return (manualHours + bookingHours + studyHours.value.on_demand).toFixed(2);
 });
 
 const manualHoursTotal = computed(() => {
@@ -174,7 +177,7 @@ const showStudyHoursPrompt = async () => {
         </div>
         <div class="flex justify-between gap-4">
           <span>On Demand Class:</span>
-          <span class="font-semibold">0</span>
+          <span class="font-semibold">{{ studyHours.on_demand.toFixed(2) }}</span>
         </div>
         <div class="border-t border-gray-600 pt-1 mt-1">
           <div class="flex justify-between gap-4">

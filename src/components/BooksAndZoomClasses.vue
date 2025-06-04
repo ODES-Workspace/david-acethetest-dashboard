@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white rounded-lg shadow-md p-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-6">Test Activities</h1>
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">Ongoing Classes</h1>
 
     <!-- Scrollable container -->
     <div class="h-96 overflow-y-auto pr-2">

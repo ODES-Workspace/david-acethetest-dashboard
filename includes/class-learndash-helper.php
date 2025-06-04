@@ -36,9 +36,9 @@ class LD_Helper
 
             // Append result
             $results[] = [
-                'course_id'     => $course_id,
-                'course_title'  => get_the_title($course_id),
-                'course_url'    => get_permalink($course_id),
+                'course_id' => $course_id,
+                'course_title' => get_the_title($course_id),
+                'course_url' => get_permalink($course_id),
                 'average_score' => round($final_avg, 2),
             ];
         }
@@ -64,11 +64,21 @@ class LD_Helper
         return $scores;
     }
 
-    public static function get_study_hours_for_user()
+    public static function get_study_hours_for_user($user_id)
     {
-
+        // this function is a copy of learndash_get_user_course_attempts_time_spent but fixed updated_at issue in it.
+        $time_spent = 0;
+        $course_ids = learndash_user_get_enrolled_courses($user_id);
+        foreach ($course_ids as $id) {
+            $progress = learndash_user_get_course_progress($user_id, $id);
+            if ($progress['status'] != 'not_started') {
+                $time_spent += learndash_get_user_course_attempts_time_spent($user_id, $id);
+            }
+        }
+        return $time_spent / 60 / 60;
     }
-    public static function get_quiz_activities_for_user($user_id,$course_ids)
+
+    public static function get_quiz_activities_for_user($user_id, $course_ids)
     {
         $results = [];
         foreach ($course_ids as $course_id) {
@@ -98,10 +108,10 @@ class LD_Helper
                     }
 
                     $attempts_data[] = [
-                        'score'      => isset($meta['points']) ? (int)$meta['points'] : 0,
-                        'questions'  => isset($meta['total_points']) ? (int)$meta['total_points'] : 0,
+                        'score' => isset($meta['points']) ? (int)$meta['points'] : 0,
+                        'questions' => isset($meta['total_points']) ? (int)$meta['total_points'] : 0,
                         'percentage' => (float)$meta['percentage'],
-                        'date'       => $meta['completed']
+                        'date' => $meta['completed']
                     ];
                 }
 
@@ -119,7 +129,7 @@ class LD_Helper
                 // Skip quizzes with no attempts
                 if (!empty($attempts_data)) {
                     $quizzes_data[] = [
-                        'name'     => $quiz['post']->post_title,
+                        'name' => $quiz['post']->post_title,
                         'attempts' => $attempts_data,
                     ];
                 }
@@ -129,7 +139,7 @@ class LD_Helper
                 $results[] = [
                     'courseTitle' => get_the_title($course_id),
                     'post_url' => get_permalink($course_id),
-                    'quizzes'     => $quizzes_data,
+                    'quizzes' => $quizzes_data,
                 ];
             }
         }
