@@ -9,7 +9,8 @@ import SkeletonLoader from "@/components/partials/SkeletonLoader.vue";
 
 const studyHours = ref<{ manual: InterfaceManualHours[], study_hours: IBooking[], on_demand: number }>({
   manual: [],
-  study_hours: []
+  study_hours: [],
+  on_demand: 0
 });
 const isLoading = ref(true);
 const showTooltip = ref(false);

@@ -2,9 +2,6 @@
 
 namespace AceTheTest_Dashboard\includes;
 
-use LatePoint\Misc\BookingRequest;
-use OsBookingModel;
-
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -27,20 +24,46 @@ class Controller
 
         add_action('wp_ajax_attd_get_test_scores', array($this, 'get_test_scores'));
         add_action('wp_ajax_attd_get_test_activities', array($this, 'get_test_activities'));
+
+        add_action('wp_ajax_attd_get_on_demand_courses_html', array($this, 'get_on_demand_courses_html'));
+        add_action('wp_ajax_attd_get_upcoming_zoom_classes', array($this, 'get_upcoming_zoom_classes'));
+    }
+
+    function get_upcoming_zoom_classes()
+    {
+        ajax_return(true, 'zoom classes', []);
+    }
+
+    function get_on_demand_courses_html()
+    {
+        $courses = ld_get_mycourses(get_current_user_id());
+        if (count($courses) == 0) {
+            ajax_return(true, 'No on demand courses found', 'No on demand courses found');
+        } else {
+            ob_start();
+            foreach ($courses as $id) {
+                $post = get_post($id);
+                echo $post->post_title;
+                echo do_shortcode('[learndash_course_progress user_id="' . get_current_user_id() . '" course_id="' . $id . '"]');
+            }
+            $html = ob_get_clean();
+            ajax_return(true, 'No on demand courses found', $html);
+            // Return the learndash_course_progress shortcode with dynamic user_id
+        }
     }
 
     public function ajax_get_study_hours()
     {
         $user_id = get_current_user_id();
-        if (!$user_id){
+        if (!$user_id) {
             ajax_return(false, 'User not logged in.');
-        }else {
+        } else {
             $manual_hours = get_user_meta(get_current_user_id(), $this->pre . 'study_hours', true);
             $bookings = Latepoint_Helper::get_study_hours_for_user($user_id);
             if (!is_array($manual_hours)) $manual_hours = [];
 //            learndash_get_user_quiz_attempts_time_spent()
             $on_demand_hours = LD_Helper::get_study_hours_for_user($user_id);
-            ajax_return(true, 'Study Hours', ['manual' => $manual_hours,'study_hours' => $bookings, 'on_demand' =>  $on_demand_hours]);
+            ajax_return(true, 'Study Hours', ['manual' => $manual_hours, 'study_hours' => $bookings, 'on_demand' => $on_demand_hours]);
         }
     }
 
@@ -52,7 +75,7 @@ class Controller
 
     public function get_test_activities()
     {
-        $results = LD_Helper::get_quiz_activities_for_user(get_current_user_id(),[889,261,259]);
+        $results = LD_Helper::get_quiz_activities_for_user(get_current_user_id(), [889, 261, 259]);
         ajax_return(true, 'Activities Fetched', $results);
     }
 

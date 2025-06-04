@@ -101,11 +101,11 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 
-const testActivities = ref([])
+const testActivities = ref<any[]>([])
 const isLoading = ref(true)
 
 onMounted(async () => {
@@ -122,7 +122,7 @@ onMounted(async () => {
   }
 })
 
-const getProgressBarColor = (percentage) => {
+const getProgressBarColor = (percentage: number) => {
   if (percentage >= 90) return 'bg-green-500'
   if (percentage >= 80) return 'bg-blue-500'
   if (percentage >= 70) return 'bg-yellow-500'
