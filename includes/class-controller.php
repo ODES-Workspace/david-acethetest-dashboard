@@ -31,7 +31,8 @@ class Controller
 
     function get_upcoming_zoom_classes()
     {
-        ajax_return(true, 'zoom classes', []);
+        $results = Latepoint_Helper::get_lp_upcoming_zoom_classes(get_current_user_id(), [8, 9]);
+        ajax_return(true, 'zoom classes', $results);
     }
 
     function get_on_demand_courses_html()
