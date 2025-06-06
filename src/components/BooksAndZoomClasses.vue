@@ -39,9 +39,9 @@
               <!-- Join Class Button -->
               <a :href="booking.zoom_url" target="_blank">
               <button
-                  class="inline-flex items-center px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-200"
+                  class="inline-flex border-none items-center px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-200"
               >
-                <Video class="w-4 h-4 mr-2" />
+                <span class="dashicons dashicons-video-alt2 mr-1"></span>
                 Join Class
               </button>
               </a>
@@ -50,10 +50,10 @@
               <button
                   v-if="booking.service.attachment"
                   @click="downloadAttachment(booking.service.attachment, booking.service.name)"
-                  class="inline-flex items-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200"
+                  class="inline-flex border-none items-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200"
                   :title="`Download ${getFileType(booking.service.attachment)} file`"
               >
-                <Download class="w-4 h-4 mr-2" />
+                <span class="dashicons dashicons-download mr-1"></span>
                 Download
               </button>
 
@@ -87,7 +87,6 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import { Video, Download } from 'lucide-vue-next'
 
 const zoomClasses = ref([])
 const isLoading = ref(true)
