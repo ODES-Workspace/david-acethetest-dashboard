@@ -11,91 +11,74 @@
             :key="i"
             class="border-b border-gray-200 pb-4"
         >
-          <!-- Course Title Skeleton -->
-          <div class="h-6 bg-gray-200 rounded w-1/3 mb-3 animate-pulse"></div>
-
-          <!-- Quiz Skeletons -->
-          <div class="space-y-2 ml-4">
-            <div
-                v-for="j in 2"
-                :key="j"
-                class="border-l-2 border-gray-100 pl-4 pb-2"
-            >
-              <!-- Quiz Name Skeleton -->
-              <div class="h-5 bg-gray-200 rounded w-2/3 mb-2 animate-pulse"></div>
-
-              <!-- Attempt Skeletons -->
-              <div class="space-y-1">
-                <div
-                    v-for="k in 2"
-                    :key="k"
-                    class="ml-2"
-                >
-                  <div class="flex justify-between items-start mb-1">
-                    <div class="h-4 bg-gray-200 rounded w-1/4 animate-pulse"></div>
-                    <div class="h-4 bg-gray-200 rounded w-12 animate-pulse"></div>
-                  </div>
-                  <div class="mb-1">
-                    <div class="w-full bg-gray-200 rounded-full h-2 animate-pulse"></div>
-                  </div>
-                  <div class="h-3 bg-gray-200 rounded w-20 mb-2 animate-pulse"></div>
-                </div>
-              </div>
+          <div class="flex justify-between items-center mb-3">
+            <div class="h-6 bg-gray-200 rounded w-2/3 animate-pulse"></div>
+            <div class="flex space-x-2">
+              <div class="h-8 bg-gray-200 rounded w-24 animate-pulse"></div>
+              <div class="h-8 bg-gray-200 rounded w-20 animate-pulse"></div>
             </div>
           </div>
+          <div class="h-4 bg-gray-200 rounded w-1/3 animate-pulse"></div>
         </div>
       </div>
 
       <!-- Actual Content -->
-      <div v-else class="space-y-4">
-<!--        <div-->
-<!--            v-for="(course, courseIndex) in testActivities"-->
-<!--            :key="courseIndex"-->
-<!--            class="border-b border-gray-200 pb-4 last:border-b-0"-->
-<!--        >-->
-<!--          &lt;!&ndash; Course Title &ndash;&gt;-->
-<!--          <a :href="course.post_url">-->
-<!--            <h2 class="text-xl font-bold text-gray-900 mb-3">{{ course.courseTitle }}</h2>-->
-<!--          </a>-->
+      <div v-else class="space-y-2">
+        <div
+            v-for="(booking, index) in zoomClasses"
+            :key="booking.id"
+            class="border-b border-gray-200 pb-4 last:border-b-0"
+        >
+          <!-- Service Name and Buttons Row -->
+          <div class="flex justify-between items-center mb-0">
+            <!-- Service Name -->
+            <h2 class="text-xl font-bold text-gray-900 flex-1 mr-4">{{ booking.service.name }}</h2>
 
-<!--          &lt;!&ndash; Quizzes for this course &ndash;&gt;-->
-<!--          <div class="space-y-2 ml-4">-->
-<!--            <div-->
-<!--                v-for="(quiz, quizIndex) in course.quizzes"-->
-<!--                :key="quizIndex"-->
-<!--                class="border-l-2 border-gray-100 pl-4 pb-2"-->
-<!--            >-->
-<!--              &lt;!&ndash; Quiz Name &ndash;&gt;-->
-<!--              <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ quiz.name }}</h3>-->
+            <!-- Buttons Container -->
+            <div class="flex space-x-2 flex-shrink-0">
+              <!-- Join Class Button -->
+              <a :href="booking.zoom_url" target="_blank">
+              <button
+                  class="inline-flex items-center px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-200"
+              >
+                <Video class="w-4 h-4 mr-2" />
+                Join Class
+              </button>
+              </a>
 
-<!--              &lt;!&ndash; Attempts for this quiz &ndash;&gt;-->
-<!--              <div class="space-y-1">-->
-<!--                <div-->
-<!--                    v-for="(attempt, attemptIndex) in quiz.attempts"-->
-<!--                    :key="attemptIndex"-->
-<!--                    class="ml-2"-->
-<!--                >-->
-<!--                  <div class="flex justify-between items-start mb-0">-->
-<!--                    <p class="text-sm text-gray-600 mb-0">Score: {{ attempt.score }}/{{ attempt.questions }}</p>-->
-<!--                    <span class="text-lg font-bold text-gray-900 mb-0">{{ attempt.percentage }}%</span>-->
-<!--                  </div>-->
+              <!-- Download Button -->
+              <button
+                  v-if="booking.service.attachment"
+                  @click="downloadAttachment(booking.service.attachment, booking.service.name)"
+                  class="inline-flex items-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200"
+                  :title="`Download ${getFileType(booking.service.attachment)} file`"
+              >
+                <Download class="w-4 h-4 mr-2" />
+                Download
+              </button>
 
-<!--                  <div class="mb-1">-->
-<!--                    <div class="w-full bg-gray-200 rounded-full h-2">-->
-<!--                      <div-->
-<!--                          class="h-2 rounded-full transition-all duration-300"-->
-<!--                          :class="getProgressBarColor(attempt.percentage)"-->
-<!--                          :style="{ width: attempt.percentage + '%' }"-->
-<!--                      ></div>-->
-<!--                    </div>-->
-<!--                  </div>-->
+              <!-- No attachment placeholder (maintains layout) -->
+              <div v-else class="w-20"></div>
+            </div>
+          </div>
 
-<!--                  <p class="text-xs text-gray-500 mb-2">{{ attempt.date }}</p>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
+          <!-- Booking Start Date Time -->
+          <p class="text-sm text-gray-600 mb-1">
+            {{ formatDateTime(booking.start_datetime_utc) }}
+          </p>
+
+          <!-- Booking Code and File Type -->
+          <div class="flex items-center justify-between">
+            <p class="text-xs text-gray-500">
+              Booking Code: {{ booking.booking_code }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Empty state -->
+        <div v-if="zoomClasses.length === 0" class="text-center py-8">
+          <p class="text-gray-500 text-lg">No upcoming zoom classes found.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -104,6 +87,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import { Video, Download } from 'lucide-vue-next'
 
 const zoomClasses = ref([])
 const isLoading = ref(true)
@@ -116,12 +100,109 @@ onMounted(async () => {
     });
     zoomClasses.value = response.data.data ?? [];
   } catch (error) {
-    console.error('Error fetching test activities:', error);
+    console.error('Error fetching zoom classes:', error);
   } finally {
     isLoading.value = false;
   }
 })
 
+// Format datetime for display
+const formatDateTime = (dateTimeString: string) => {
+  const date = new Date(dateTimeString);
+  return date.toLocaleString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
+}
+
+// Get file type from URL
+const getFileType = (url: string) => {
+  if (!url) return 'file';
+
+  const extension = url.split('.').pop()?.toLowerCase();
+
+  switch (extension) {
+    case 'pdf':
+      return 'pdf';
+    case 'doc':
+    case 'docx':
+      return 'word';
+    case 'xls':
+    case 'xlsx':
+      return 'excel';
+    case 'ppt':
+    case 'pptx':
+      return 'powerpoint';
+    case 'jpg':
+    case 'jpeg':
+    case 'png':
+    case 'gif':
+    case 'webp':
+      return 'image';
+    case 'mp4':
+    case 'avi':
+    case 'mov':
+    case 'wmv':
+      return 'video';
+    case 'mp3':
+    case 'wav':
+    case 'flac':
+      return 'audio';
+    case 'zip':
+    case 'rar':
+    case '7z':
+      return 'archive';
+    case 'txt':
+      return 'text';
+    default:
+      return 'file';
+  }
+}
+
+// Get appropriate file name for download
+const getDownloadFileName = (url: string, serviceName: string) => {
+  const urlParts = url.split('/');
+  const originalFileName = urlParts[urlParts.length - 1];
+
+  // If URL already has a proper filename, use it
+  if (originalFileName && originalFileName.includes('.')) {
+    return originalFileName;
+  }
+  // Otherwise, create a filename based on service name and detected file type
+  const cleanServiceName = serviceName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+  // Get the actual extension from URL
+  const extension = url.split('.').pop()?.toLowerCase() || 'pdf';
+
+  return `${cleanServiceName}_attachment.${extension}`;
+}
+
+
+
+// Download attachment function
+const downloadAttachment = (attachmentUrl: string, serviceName: string) => {
+  // Create a temporary anchor element to trigger download
+  const link = document.createElement('a');
+  link.href = attachmentUrl;
+
+  // Get appropriate filename
+  const filename = getDownloadFileName(attachmentUrl, serviceName);
+
+  link.download = filename;
+  link.target = '_blank'; // Open in new tab as fallback
+
+  // Append to body, click, and remove
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  // Optional: Show success message
+  console.log(`Downloading ${getFileType(attachmentUrl)} file: ${filename}`);
+}
 </script>
 
 <style scoped>

@@ -15,10 +15,11 @@ class Latepoint_Helper
     }
 
     public static function get_lp_upcoming_zoom_classes($user_id, $service_ids){
-        $bookings =  (new \OsBookingModel())->where(['user_id'=> $user_id, 'start_date >=' => date('Y-m-d')])->where_in('service_id', $service_ids)->get_results_as_models();
+        $bookings =  (new \OsBookingModel())->where(['user_id'=> $user_id,'start_date >=' => date('Y-m-d')])->where_in('service_id', $service_ids)->get_results_as_models();
         foreach ($bookings as $booking){
             $booking->service = $booking->service;
             $booking->service->attachment = $booking->service->get_meta_by_key('attachment');
+            $booking->zoom_url = $booking->get_meta_by_key('zoom_meeting_join_url');
         }
         return $bookings;
     }
