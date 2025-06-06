@@ -25,7 +25,7 @@
       <!-- Actual Content -->
       <div v-else class="space-y-2">
         <div
-            v-for="(booking, index) in zoomClasses"
+            v-for="booking in zoomClasses"
             :key="booking.id"
             class="border-b border-gray-200 pb-4 last:border-b-0"
         >
@@ -38,20 +38,20 @@
             <div class="flex space-x-2 flex-shrink-0">
               <!-- Join Class Button -->
               <a :href="booking.zoom_url" target="_blank">
-              <button
-                  class="inline-flex border-none items-center px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-200"
-              >
-                <span class="dashicons dashicons-video-alt2 mr-1"></span>
-                Join Class
-              </button>
+                <button
+                    class="inline-flex border-none items-center px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-200"
+                >
+                  <span class="dashicons dashicons-video-alt2 mr-1"></span>
+                  Join Class
+                </button>
               </a>
 
               <!-- Download Button -->
               <button
                   v-if="booking.service.attachment"
-                  @click="downloadAttachment(booking.service.attachment, booking.service.name)"
-                  class="inline-flex border-none items-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200"
                   :title="`Download ${getFileType(booking.service.attachment)} file`"
+                  class="inline-flex border-none items-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200"
+                  @click="downloadAttachment(booking.service.attachment, booking.service.name)"
               >
                 <span class="dashicons dashicons-download mr-1"></span>
                 Download
@@ -85,10 +85,16 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import {onMounted, ref} from 'vue'
 import axios from 'axios'
 
-const zoomClasses = ref([])
+const zoomClasses = ref<{
+  id: string,
+  booking_code: string,
+  zoom_url: string,
+  start_datetime_utc: string,
+  service: { name: string, attachment: string }
+}[]>([])
 const isLoading = ref(true)
 
 onMounted(async () => {
@@ -179,7 +185,6 @@ const getDownloadFileName = (url: string, serviceName: string) => {
 
   return `${cleanServiceName}_attachment.${extension}`;
 }
-
 
 
 // Download attachment function
