@@ -15,19 +15,12 @@ class Latepoint_Helper
     }
 
     public static function get_lp_upcoming_zoom_classes($user_id, $service_ids){
-        $results = [];
-        foreach ($service_ids as $service_id) {
-            $filter = new \LatePoint\Misc\Filter([
-                'service_id'  => $service_id,
-                'date_from' =>  date('Y-m-d'),
-            ] );
-            $bookings = \OsBookingHelper::get_bookings($filter,true);
-            foreach ($bookings as $booking) {
-            }
-            $results[] = $bookings;
+        $bookings =  (new \OsBookingModel())->where(['user_id'=> $user_id, 'start_date >=' => date('Y-m-d')])->where_in('service_id', $service_ids)->get_results_as_models();
+        foreach ($bookings as $booking){
+            $booking->service = $booking->service;
+            $booking->service->attachment = $booking->service->get_meta_by_key('attachment');
         }
-
-        return $results;
+        return $bookings;
     }
 
 }

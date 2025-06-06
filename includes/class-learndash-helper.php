@@ -11,8 +11,6 @@ class LD_Helper
 
         foreach ($course_ids as $course_id) {
             // Init scores in case no quizzes found
-            $course_quiz_avg = 0;
-            $lesson_quiz_avg = 0;
             $course_scores = [];
             $lesson_scores = [];
 
