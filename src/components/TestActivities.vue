@@ -48,6 +48,12 @@
 
       <!-- Actual Content -->
       <div v-else class="space-y-4">
+        <!-- Empty state message -->
+        <div v-if="testActivities.length === 0" class="text-center py-12">
+         <fileChartLine />
+          <p class="text-gray-500 text-lg font-medium">No test activities found</p>
+          <p class="text-gray-400 mt-2">Complete a test to see your results here</p>
+        </div>
         <div
             v-for="(course, courseIndex) in testActivities"
             :key="courseIndex"
@@ -104,6 +110,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+
 
 const testActivities = ref<any[]>([])
 const isLoading = ref(true)

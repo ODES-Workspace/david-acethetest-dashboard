@@ -2,13 +2,12 @@
   <div class="flex gap-8 flex-wrap">
     <exam-date class="flex-1"/>
     <study-hours class="flex-1"/>
-    <!--    <test-scores class="flex-1"/>-->
   </div>
   <div class="flex gap-8 flex-wrap mt-8">
-    <test-activities class="flex-1"/>
+    <on-demand-courses class="flex-1"/>
     <books-and-zoom-classes class="flex-1"/>
   </div>
-  <on-demand-courses/>
+  <test-activities class="mt-8"/>
 </template>
 
 <script lang="ts" setup>
