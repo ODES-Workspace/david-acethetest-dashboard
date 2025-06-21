@@ -31,7 +31,7 @@ final class AceThetest_Dashboard
      */
     protected static $_instance = null;
 
-    public $version = '2.0.4';
+    public $version = '2.0.5';
     public $settings;
 
     /**

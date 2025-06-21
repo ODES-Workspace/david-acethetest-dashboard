@@ -32,7 +32,7 @@
           <!-- Service Name and Buttons Row -->
           <div class="flex justify-between items-center mb-0">
             <!-- Service Name -->
-            <h2 class="text-xl font-bold text-gray-900 flex-1 mr-4">{{ booking.service.name }}</h2>
+            <h2 class="text-lg font-bold text-gray-900 flex-1 mr-4">{{ booking.service.name }}</h2>
 
             <!-- Buttons Container -->
             <div class="flex space-x-2 flex-shrink-0">
@@ -54,7 +54,7 @@
                   @click="downloadAttachment(booking.service.attachment, booking.service.name)"
               >
                 <span class="dashicons dashicons-download mr-1"></span>
-                Download
+                Download Book
               </button>
 
               <!-- No attachment placeholder (maintains layout) -->
