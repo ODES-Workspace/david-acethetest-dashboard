@@ -31,7 +31,7 @@ class Controller
 
     function get_upcoming_zoom_classes()
     {
-        $results = Latepoint_Helper::get_lp_upcoming_zoom_classes(get_current_user_id(), [8, 9]);
+        $results = Latepoint_Helper::get_lp_upcoming_zoom_classes(get_current_user_id(), ACETHETEST_ZOOM_COURSES_ID);
         ajax_return(true, 'zoom classes', $results);
     }
 
@@ -43,9 +43,16 @@ class Controller
         } else {
             ob_start();
             foreach ($courses as $id) {
+                if ((int)$id === 889) {
+                    continue; // Skip course with ID 889
+                }
                 $post = get_post($id);
-                echo $post->post_title;
+                $permalink = get_permalink($id);
+
+                echo '<div>';
+                echo '<a href="' . esc_url($permalink) . '" target="_blank">' . esc_html($post->post_title) . '</a>';
                 echo do_shortcode('[learndash_course_progress user_id="' . get_current_user_id() . '" course_id="' . $id . '"]');
+                echo '</div>';
             }
             $html = ob_get_clean();
             ajax_return(true, 'No on demand courses found', $html);
@@ -62,7 +69,6 @@ class Controller
             $manual_hours = get_user_meta(get_current_user_id(), $this->pre . 'study_hours', true);
             $bookings = Latepoint_Helper::get_study_hours_for_user($user_id);
             if (!is_array($manual_hours)) $manual_hours = [];
-//            learndash_get_user_quiz_attempts_time_spent()
             $on_demand_hours = LD_Helper::get_study_hours_for_user($user_id);
             ajax_return(true, 'Study Hours', ['manual' => $manual_hours, 'study_hours' => $bookings, 'on_demand' => $on_demand_hours]);
         }
@@ -76,7 +82,7 @@ class Controller
 
     public function get_test_activities()
     {
-        $results = LD_Helper::get_quiz_activities_for_user(get_current_user_id(), [889, 261, 259]);
+        $results = LD_Helper::get_quiz_activities_for_user(get_current_user_id(), ACETHETEST_LEARNDASH_ONDEMAND_COURSES_ID);
         ajax_return(true, 'Activities Fetched', $results);
     }
 

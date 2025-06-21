@@ -1,9 +1,9 @@
 <template>
-  <div class="bg-white rounded-lg shadow-md p-8">
+  <div class="bg-white rounded-lg shadow-md p-8 relative">
     <h1 class="text-3xl font-bold text-gray-900 mb-6">Upcoming Zoom Classes</h1>
 
     <!-- Scrollable container -->
-    <div class="h-96 overflow-y-auto pr-2">
+    <div class="h-96 overflow-y-auto pr-2 mb-8">
       <!-- Loading Skeleton -->
       <div v-if="isLoading" class="space-y-4">
         <div
@@ -81,12 +81,22 @@
         </div>
       </div>
     </div>
+
+    <!-- See More Link -->
+    <a
+        @click="navigateToMyCourses"
+        class="absolute bottom-4 right-4 text-sm text-red-600 hover:text-red-800 cursor-pointer underline transition-colors duration-200"
+    >
+      See more
+    </a>
   </div>
 </template>
 
 <script lang="ts" setup>
 import {onMounted, ref} from 'vue'
 import axios from 'axios'
+
+declare var acethetest_dashboard_script: any;
 
 const zoomClasses = ref<{
   id: string,
@@ -96,6 +106,10 @@ const zoomClasses = ref<{
   service: { name: string, attachment: string }
 }[]>([])
 const isLoading = ref(true)
+
+const navigateToMyCourses = () => {
+  window.location.href = '/my-classes/'
+}
 
 onMounted(async () => {
   try {

@@ -61,7 +61,7 @@
         >
           <!-- Course Title -->
           <a :href="course.post_url">
-            <h2 class="text-xl font-bold text-gray-900 mb-3">{{ course.courseTitle }}</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-3 underline">{{ course.courseTitle }}</h2>
           </a>
 
           <!-- Quizzes for this course -->

@@ -64,9 +64,12 @@ final class AceThetest_Dashboard
         $this->define('ACETHETEST_DASHBOARD_URL', plugin_dir_url(__FILE__));
         $this->define('ACETHETEST_DASHBOARD_BASENAME', plugin_basename(__FILE__));
         $this->define('ACETHETEST_DASHBOARD_VERSION', $this->version);
+        $this->define('ACETHETEST_LEARNDASH_ONDEMAND_COURSES_ID', [889, 261, 259]);
+        $this->define('ACETHETEST_ZOOM_COURSES_ID',[8, 9]);
+
         //todo: need to make it to production before going live
-//        $this->define('ACETHETEST_DASHBOARD_ENV', 'development');
-         $this->define('ACETHETEST_DASHBOARD_ENV', 'production');
+        $this->define('ACETHETEST_DASHBOARD_ENV', 'development');
+//         $this->define('ACETHETEST_DASHBOARD_ENV', 'production');
     }
 
     /**
