@@ -3,7 +3,7 @@
  * Plugin Name: Ace the test - Dashboard
  * Plugin URI:  shabbar.sagit@gmail.com
  * Description: Embed the shortcode [acethetest-dashboard].
- * Version:     2.0.0
+ * Version:     2.0.6
  * Author:      Shabbar Abbas
  * License:     GPL v2 or later
  * Text Domain: acethetest-dashboard
@@ -31,7 +31,7 @@ final class AceThetest_Dashboard
      */
     protected static $_instance = null;
 
-    public $version = '2.0.5';
+    public $version = '2.0.6';
     public $settings;
 
     /**
