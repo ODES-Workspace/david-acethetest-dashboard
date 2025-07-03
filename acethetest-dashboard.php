@@ -3,7 +3,7 @@
  * Plugin Name: Ace the test - Dashboard
  * Plugin URI:  shabbar.sagit@gmail.com
  * Description: Embed the shortcode [acethetest-dashboard].
- * Version:     2.0.7
+ * Version:     3.0.0
  * Author:      Shabbar Abbas
  * License:     GPL v2 or later
  * Text Domain: acethetest-dashboard
@@ -31,7 +31,7 @@ final class AceThetest_Dashboard
      */
     protected static $_instance = null;
 
-    public $version = '2.0.7';
+    public $version = '3.0.0';
     public $settings;
 
     /**
@@ -65,10 +65,11 @@ final class AceThetest_Dashboard
         $this->define('ACETHETEST_DASHBOARD_BASENAME', plugin_basename(__FILE__));
         $this->define('ACETHETEST_DASHBOARD_VERSION', $this->version);
         $this->define('ACETHETEST_LEARNDASH_ONDEMAND_COURSES_ID', [889, 261, 259]);
+        $this->define('ACETHETEST_LEARNDASH_TEST_COURSE_ID', [889]);
         $this->define('ACETHETEST_ZOOM_COURSES_ID',[8, 9]);
 
-        //todo: need to make it to production before going live
-        //this->define('ACETHETEST_DASHBOARD_ENV', 'development');
+        // todo: need to make it to production before going live
+        // $this->define('ACETHETEST_DASHBOARD_ENV', 'development');
         $this->define('ACETHETEST_DASHBOARD_ENV', 'production');
     }
 
@@ -95,6 +96,7 @@ final class AceThetest_Dashboard
         include_once 'includes/class-setup.php';
         include_once 'includes/class-controller.php';
         include_once 'includes/class-shortcodes.php';
+        include_once 'includes/cron-setup.php';
         include_once 'includes/class-learndash-helper.php';
         include_once 'includes/class-latepoint-helper.php';
 

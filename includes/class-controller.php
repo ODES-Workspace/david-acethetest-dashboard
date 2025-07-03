@@ -82,7 +82,7 @@ class Controller
 
     public function get_test_activities()
     {
-        $results = LD_Helper::get_quiz_activities_for_user(get_current_user_id(), ACETHETEST_LEARNDASH_ONDEMAND_COURSES_ID);
+        $results = LD_Helper::get_quiz_activities_for_user(get_current_user_id(), ACETHETEST_LEARNDASH_TEST_COURSE_ID);
         ajax_return(true, 'Activities Fetched', $results);
     }
 

@@ -61,7 +61,7 @@
         >
           <!-- Course Title -->
           <a :href="course.post_url">
-            <h2 class="text-xl font-bold text-gray-900 mb-3 underline">{{ course.courseTitle }}</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-3 underline">{{ decodeHtmlEntities(course.courseTitle) }}</h2>
           </a>
 
           <!-- Quizzes for this course -->
@@ -128,6 +128,13 @@ onMounted(async () => {
     isLoading.value = false;
   }
 })
+
+function decodeHtmlEntities(text: string): string {
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = text;
+  return textarea.value;
+}
+
 
 const getProgressBarColor = (percentage: number) => {
   if (percentage >= 90) return 'bg-green-500'
