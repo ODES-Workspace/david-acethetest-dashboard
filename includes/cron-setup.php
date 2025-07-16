@@ -41,8 +41,8 @@ class CronSetup
             $exam_date_raw = get_user_meta($user_id, $meta_key, true);
 
             $exam_date = date('Y-m-d', $exam_date_raw);
-
             if ($exam_date === $target_date) {
+                $this->send_sms($user_id);
 
                 $message = $this->build_exam_reminder_email($full_name, $exam_date);
 
@@ -53,6 +53,39 @@ class CronSetup
             }
         }
     }
+
+    function send_sms($user_id) {
+        $user = get_userdata($user_id);
+
+        $phone = get_user_meta( $user_id, 'mobile_number', true);
+        if(empty($phone)) return;
+
+        $webhook_url = 'https://hooks.zapier.com/hooks/catch/23812642/u2ia7x1/';
+
+        $meta_key = $this->pre . 'exam_date';
+        $exam_date_raw = get_user_meta($user_id, $meta_key, true);
+
+        $exam_date = date('Y-m-d', $exam_date_raw);
+        $body = [
+            'id'    => $user_id,
+            'name'  => $user->display_name,
+            'phone'  => $phone,
+            'date'  => $exam_date,
+        ];
+
+        $args = [
+            'headers' => ['Content-Type' => 'application/json'],
+            'body'    => json_encode($body),
+            'method'  => 'POST',
+            'timeout' => 15,
+        ];
+
+        $response = wp_remote_post($webhook_url, $args);
+        if (is_wp_error($response)) {
+            error_log('Webhook error: ' . $response->get_error_message());
+        }
+    }
+
 
     private function build_exam_reminder_email($full_name, $exam_date): string
     {
